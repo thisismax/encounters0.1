@@ -1,11 +1,15 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, flash
 
 views = Blueprint('views',__name__)
 
-@views.route('/')
+@views.route('/', methods=['GET','POST'])
 def home():
-    return render_template("home.html", text="this is a variable")
+    if request.method =='POST':
+        #data = request.form.to_dict()
+        flash("Sweet!",category="info")
 
-@views.route('/addEncounter')
-def addEncounter():
-    return render_template("addEncounter.html")
+    return render_template("home.html")
+
+#@views.route('/addEncounter')
+#def addEncounter():
+#    return render_template("addEncounter.html")
