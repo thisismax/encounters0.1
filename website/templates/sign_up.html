@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Encounter
+{% endblock %}
+
+{% block main %}
+
+<form method="POST">
+    <label for="username">Username</label>
+    <input 
+        type="text"
+        id="username"
+        name="username"
+        placeholder="username"
+    /><br />
+    <label for="password1">Select Password</label>
+    <input 
+        type="password"
+        id="password1"
+        name="password1"
+        placeholder="password"
+    /><br />
+    <label for="password2">Repeat Password</label>
+    <input 
+        type="password"
+        id="password2"
+        name="password2"
+        placeholder="password"
+    /><br />
+    <button type="add">Create Account</button>
+</form>
+{% endblock %}
