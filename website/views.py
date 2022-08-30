@@ -10,6 +10,6 @@ def home():
 
     return render_template("home.html")
 
-#@views.route('/addEncounter')
-#def addEncounter():
-#    return render_template("addEncounter.html")
+@views.route('/combat')
+def combat():
+    return render_template("combat.html")

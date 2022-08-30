@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+Add Encounter
+{% endblock %}
+
+{% block main %}
+
+<form method="POST">
+    <label for="combatantName">Combatant Name</label>
+    <input 
+        type="text"
+        id="combatantName"
+        name="combatantName"
+        placeholder="Combatant Name"
+    />
+    <label for="initiativeBonus">Initiative Bonus</label>
+    <input 
+        type="number"
+        id="initiativeBonus"
+        name="initiativeBonus"
+        placeholder="0"
+    />
+    <button type="add">Add</button>
+</form>
+{% endblock %}

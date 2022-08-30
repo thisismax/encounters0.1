@@ -1,5 +1,6 @@
 body {
     background-color: lightgray;
+    margin: 10px;
 }
 
 nav {
@@ -20,6 +21,12 @@ nav {
 }
 
 main {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
+footer {
     display: flex;
     justify-content: center;
     margin: 10px;
