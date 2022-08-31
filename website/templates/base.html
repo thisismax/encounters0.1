@@ -23,10 +23,14 @@
     
         <nav>
             <a class="navitem" href="/">Home</a>
-            <a class="navitem" href="/combat">Combat</a>
-            <a class="navitem" href="/login">Login</a>
-            <a class="navitem" href="/logout">Logout</a>
-            <a class="navitem" href="/sign-up">Sign-up</a>
+            <a class="navitem" href="/combat">Combat</a>    
+            {% if user.is_authenticated %}
+                <a class="navitem" href="/manageCombats">Manage Combats</a>
+                <a class="navitem" href="/logout">Logout</a>
+            {% else %}
+                <a class="navitem" href="/login">Login</a>
+                <a class="navitem" href="/sign-up">Sign-up</a>
+            {% endif %}
         </nav>
 
 
