@@ -1,6 +1,7 @@
 from . import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from random import choice
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -19,9 +20,18 @@ class User(db.Model, UserMixin):
 
 class Combat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    combat_key = db.Column(db.String(8), unique=True)
     combatName = db.Column(db.String(150))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     combatants = db.relationship("Combatant")
+
+    @staticmethod
+    def set_combat_key():
+        letters = ['1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+        key = ""
+        for i in range(8):
+            key += choice(letters)
+        return key
 
 
 class Combatant(db.Model):

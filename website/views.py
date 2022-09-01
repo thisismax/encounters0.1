@@ -23,6 +23,7 @@ def manageCombats():
         
         new_combat = Combat(
             combatName=data['combatName'],
+            combat_key=Combat.set_combat_key(),
             user_id=current_user.id
         )
         

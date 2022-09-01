@@ -18,4 +18,26 @@ Add Encounter
     <button type="add">Add New Combat</button>
 </form>
 
+<table>
+    <caption class="tableCaption">List of your combats.</caption>
+    <thead>
+        <tr>
+            <th>Combat Name</th>
+            <th>ID</th>
+            <th>Number of Combatants</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for combat in user.combats %}
+        <!-- this does not handle a long list of combats (yet?) -->
+            <tr>
+                <td>{{ combat.combatName }}</td>
+                <td>{{ combat.combat_key }}</td>
+                <td>test</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
 {% endblock %}

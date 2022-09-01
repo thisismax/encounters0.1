@@ -21,9 +21,20 @@ nav {
 }
 
 main {
+    padding: 5%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     margin: 10px;
+}
+
+table {
+    padding: 5% 10% 5% 10%;
+    text-align: center;
+}
+
+.tableCaption {
+    padding-top: 5%;
 }
 
 footer {
