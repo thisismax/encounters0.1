@@ -28,6 +28,10 @@ main {
     margin: 10px;
 }
 
+section {
+    padding: 2%
+}
+
 table {
     padding: 5% 10% 5% 10%;
     text-align: center;

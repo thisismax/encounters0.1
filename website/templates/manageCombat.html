@@ -32,7 +32,7 @@ Add Encounter
         <!-- this does not handle a long list of combats (yet?) -->
             <tr>
                 <td>{{ combat.combatName }}</td>
-                <td>{{ combat.combat_key }}</td>
+                <td><a href="/combat/{{ combat.combat_key }}">{{ combat.combat_key }}</a></td>
                 <td>test</td>
             </tr>
         {% endfor %}
