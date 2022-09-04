@@ -29,7 +29,8 @@ def combat_id(combat_arg):
         new_combatant = Combatant(
             combatantName=data['combatantName'],
             initiativeBonus=data['initiativeBonus'],
-            combat_id=combat.id
+            combat_id=combat.id,
+            damage = 0
         )
 
         # this should probably be in a try/except
