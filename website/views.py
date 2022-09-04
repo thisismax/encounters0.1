@@ -26,18 +26,27 @@ def combat_id(combat_arg):
     if request.method =='POST':
         data = request.form.to_dict()
         
-        new_combatant = Combatant(
-            combatantName=data['combatantName'],
-            initiativeBonus=data['initiativeBonus'],
-            combat_id=combat.id,
-            damage = 0
-        )
+        # note to self - put these in their own class/functions
+        if data['combatantForm'] == "addCombatant":
+            new_combatant = Combatant(
+                combatantName=data['combatantName'],
+                initiativeBonus=data['initiativeBonus'],
+                combat_id=combat.id,
+                damage = 0
+            )
 
-        # this should probably be in a try/except
-        db.session.add(new_combatant)
-        db.session.commit()
+            db.session.add(new_combatant)
+            db.session.commit()
         
-        flash("Added new Combatant",category="success")
+            flash("Added new Combatant",category="success")
+
+        elif data['combatantForm'] == "editCombatant":
+            combatant = Combatant.query.get(data['combatantId'])
+            combatant.damage += int(data['addDamage'])
+            db.session.commit()
+            flash(f"Updated Combatant: {combatant}",category="success")
+
+
 
     return render_template("combat.html", user=current_user, combat=combat)
 

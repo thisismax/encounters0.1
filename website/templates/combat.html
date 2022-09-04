@@ -9,6 +9,7 @@ Add Encounter
 {% if combat %}
     <section>
     <form method="POST">
+        <input type="hidden" name="combatantForm" value="addCombatant"/>
         <label for="combatantName">Combatant Name</label>
         <input 
             type="text"
@@ -43,18 +44,24 @@ Add Encounter
             <tbody>
                 {% for combatant in combat.combatants %}
                     <tr>
-                        <td>{{combatant.combatantName}}</td>
-                        <td>{{combatant.initiativeBonus}}</td>
-                        <td>{{combatant.damage}}</td>
-                        <td>
-                            <input 
-                                type="text"
-                            />
-                            <button>Add Damage</button>
-                            <!-- Oh that's an interesting problem. ID must be unique... -->
-                        </td>
-                        <td><button>Disable</button></td>
-                        <td><button>Delete</button></td>
+                        <form method="POST">
+                            <input type="hidden" name="combatantForm" value="editCombatant"/>
+                            <input type="hidden" name="combatantId" value="{{combatant.id}}"/>
+                            <td>{{combatant.combatantName}}</td>
+                            <td>{{combatant.initiativeBonus}}</td>
+                            <td>{{combatant.damage}}</td>
+                            <td>
+                                <input 
+                                    type="number"
+                                    id="addDamage"
+                                    name="addDamage"
+                                    placeholder=0
+                                />
+                                <button>Add Damage</button>
+                            </td>
+                            <td><button>Disable</button></td>
+                            <td><button>Delete</button></td>
+                        </form>
                     </tr>
                 {% endfor %}
             </tbody>
