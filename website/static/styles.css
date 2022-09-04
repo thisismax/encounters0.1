@@ -15,13 +15,14 @@ nav {
 }
 
 .message {
+    padding-left: 10px;
     background-color: black;
     display: block;
     color: white;
 }
 
 main {
-    padding: 5%;
+    padding: 2% 10% 2% 10%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -29,16 +30,18 @@ main {
 }
 
 section {
-    padding: 2%
+    padding: 2%;
+    display: flex;
+    justify-content: center;
 }
 
 table {
-    padding: 5% 10% 5% 10%;
+    padding: 2% 0% 2% 0%;
     text-align: center;
 }
 
 .tableCaption {
-    padding-top: 5%;
+    padding-top: 2%;
 }
 
 footer {
