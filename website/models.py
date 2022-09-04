@@ -40,4 +40,6 @@ class Combatant(db.Model):
 
     combatantName = db.Column(db.String(150))
     initiativeBonus = db.Column(db.Integer)
+    damage = db.Column(db.Integer)
+    disabled = db.Column(db.Boolean)
     combatPosition = db.Column(db.Integer)

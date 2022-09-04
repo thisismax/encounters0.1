@@ -20,21 +20,23 @@ def combat_id(combat_arg):
     combat = Combat.query.filter_by(combat_key=combat_arg).first()
 
     if not(combat):
+        flash("Combat not found",category="error")
         return redirect(url_for("views.combat_no_id"))
 
     if request.method =='POST':
         data = request.form.to_dict()
         
-        new_combat = Combatant(
+        new_combatant = Combatant(
             combatantName=data['combatantName'],
-            initiativeBonus=data['initiativeBonus']
+            initiativeBonus=data['initiativeBonus'],
+            combat_id=combat.id
         )
-        
+
         # this should probably be in a try/except
         db.session.add(new_combatant)
         db.session.commit()
         
-        flash("Added new Combat",category="success")
+        flash("Added new Combatant",category="success")
 
     return render_template("combat.html", user=current_user, combat=combat)
 
