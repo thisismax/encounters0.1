@@ -28,11 +28,16 @@ def combat_id(combat_arg):
         
         # note to self - put these in their own class/functions
         if data['combatantForm'] == "addCombatant":
+            
+            if not data['initiativeBonus']:
+                data['initiativeBonus'] = 0
+
             new_combatant = Combatant(
                 combatantName=data['combatantName'],
                 initiativeBonus=data['initiativeBonus'],
                 combat_id=combat.id,
-                damage = 0
+                damage = 0,
+                disabled = False
             )
 
             db.session.add(new_combatant)
@@ -41,8 +46,29 @@ def combat_id(combat_arg):
             flash("Added new Combatant",category="success")
 
         elif data['combatantForm'] == "editCombatant":
+            
+            print(data)
+            
             combatant = Combatant.query.get(data['combatantId'])
-            combatant.damage += int(data['addDamage'])
+
+            # check for deletion
+            if 'delete' in data:
+                db.session.delete(combatant)
+
+            # check if character has been disabled/enabled
+            # should I change this to skip? act / skip? or something.
+            if 'disable' in data:
+                if data['disable'] == 'Enable':
+                    combatant.disabled = False
+                else:
+                    combatant.disabled = True
+
+            # modify damage
+            if not data['addDamage']:
+                data['addDamage'] = 0
+            combatant.damage = max(combatant.damage + int(data['addDamage']),0)
+
+            # commit changes
             db.session.commit()
             flash(f"Updated Combatant: {combatant}",category="success")
 

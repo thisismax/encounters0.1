@@ -35,10 +35,14 @@ Add Encounter
                 <tr>
                     <th>Combatant</th>
                     <th>Initiative Bonus</th>
+                    <th>Initiative</th>
                     <th>Total Damage</th>
                     <th>Damage</th>
+                    <th>Move Up</th>
+                    <th>Move Down</th>
                     <th>Disable</th>
                     <th>Delete</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +53,7 @@ Add Encounter
                             <input type="hidden" name="combatantId" value="{{combatant.id}}"/>
                             <td>{{combatant.combatantName}}</td>
                             <td>{{combatant.initiativeBonus}}</td>
+                            <td>{{combatant.initiative}}</td>
                             <td>{{combatant.damage}}</td>
                             <td>
                                 <input 
@@ -57,10 +62,24 @@ Add Encounter
                                     name="addDamage"
                                     placeholder=0
                                 />
-                                <button>Add Damage</button>
+                                <input type="submit" name="addDamage" value="Add Damage" />
                             </td>
-                            <td><button>Disable</button></td>
-                            <td><button>Delete</button></td>
+                            <td><input type="submit" name="changePosition" value="Up" /></td>
+                            <td><input type="submit" name="changePosition" value="Down" /></td>
+                            <td>
+                                <input 
+                                    type="submit"
+                                    name="disable"
+                                    value=
+                                        {% if combatant.disabled %}
+                                            "Enable"
+                                        {% else %}
+                                            "Disable"
+                                        {% endif %}
+                                />
+                            </td>
+                            <td><input type="submit" name="delete" value="Delete" /></td>
+
                         </form>
                     </tr>
                 {% endfor %}
