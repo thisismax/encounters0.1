@@ -37,13 +37,14 @@ def combat_id(combat_arg):
                 initiativeBonus=data['initiativeBonus'],
                 combat_id=combat.id,
                 damage = 0,
-                disabled = False
+                disabled = False,
+                combatPosition = Combatant.query.filter_by(combat_id=combat.id).count()+1
             )
 
             db.session.add(new_combatant)
             db.session.commit()
         
-            flash("Added new Combatant",category="success")
+            flash(f"Added new Combatant {new_combatant.combatPosition}",category="success")
 
         elif data['combatantForm'] == "editCombatant":
             
@@ -62,6 +63,28 @@ def combat_id(combat_arg):
                     combatant.disabled = False
                 else:
                     combatant.disabled = True
+
+            # check position
+            if 'changePosition' in data:
+                # get all the combatants
+                combatants_query = (Combatant
+                    .query
+                    .filter_by(combat_id=combat.id)
+                    .order_by('combatPosition')
+                    .all()
+                )
+                combatants_list = [combatant.id for combatant in combatants_query]
+                
+                if data['changePosition'] == "Up":
+                    # need to stop people from overrunning the array here
+                    current_Position = combatants_list.index(combatant.id)
+                    combatants_list.pop(current_Position)
+                    combatants_list.insert(current_Position-1,combatant.id)
+
+                print(combatants_list)
+                
+                # Fack. And then I have to go in and update everything.
+                # I need to figure out an elegant way to store, retrieve and modify the combat position.
 
             # modify damage
             if not data['addDamage']:
