@@ -19,6 +19,9 @@ def combat_id(combat_arg):
 
     combat = Combat.query.filter_by(combat_key=combat_arg).first()
 
+    # this is not always necessary - I should do this differently
+    combatants = Combatant.query.filter_by(combat_id=combat.id).order_by('combatPosition').all()
+
     if not(combat):
         flash("Combat not found",category="error")
         return redirect(url_for("views.combat_no_id"))
@@ -38,7 +41,7 @@ def combat_id(combat_arg):
                 combat_id=combat.id,
                 damage = 0,
                 disabled = False,
-                combatPosition = Combatant.query.filter_by(combat_id=combat.id).count()+1
+                combatPosition = combat.getCombatSize()+1
             )
 
             db.session.add(new_combatant)
@@ -57,7 +60,6 @@ def combat_id(combat_arg):
                 db.session.delete(combatant)
 
             # check if character has been disabled/enabled
-            # should I change this to skip? act / skip? or something.
             if 'disable' in data:
                 if data['disable'] == 'Enable':
                     combatant.disabled = False
@@ -67,24 +69,22 @@ def combat_id(combat_arg):
             # check position
             if 'changePosition' in data:
                 # get all the combatants
-                combatants_query = (Combatant
-                    .query
-                    .filter_by(combat_id=combat.id)
-                    .order_by('combatPosition')
-                    .all()
-                )
-                combatants_list = [combatant.id for combatant in combatants_query]
-                
-                if data['changePosition'] == "Up":
-                    # need to stop people from overrunning the array here
-                    current_Position = combatants_list.index(combatant.id)
-                    combatants_list.pop(current_Position)
-                    combatants_list.insert(current_Position-1,combatant.id)
+                combatants_list = [combatant.id for combatant in combatants]
 
                 print(combatants_list)
+
+                #### this is actually a big deal ####
+                #### this is in many ways the whole point of the site. ####
+
+                # get the new position
+                # move the combatant in the list
+                # then update all the combatant combat positions
+
+                # something like this?
+                #current_Position = combatants_list.index(combatant.id)
+                #combatants_list.pop(current_Position)
+                #combatants_list.insert(current_Position-1,combatant.id)
                 
-                # Fack. And then I have to go in and update everything.
-                # I need to figure out an elegant way to store, retrieve and modify the combat position.
 
             # modify damage
             if not data['addDamage']:
