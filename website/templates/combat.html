@@ -46,7 +46,7 @@ Add Encounter
                 </tr>
             </thead>
             <tbody>
-                {% for combatant in combat.combatants %}
+                {% for combatant in combat.combatants|sort(attribute="combatPosition") %}
                     <tr>
                         <form method="POST">
                             <input type="hidden" name="combatantForm" value="editCombatant"/>

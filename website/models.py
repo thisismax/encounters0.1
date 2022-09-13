@@ -33,15 +33,25 @@ class Combat(db.Model):
             key += choice(letters)
         return key
 
-    def getCombatSize(self):
-        return Combatant.query.filter_by(combat_id=self.id).count()
+    def getLastPosition(self):
+        lastCombatant = (Combatant
+            .query
+            .filter_by(combat_id=self.id)
+            .order_by(Combatant.combatPosition.desc())
+            .first()
+        )
 
-    def getNewCombatantPosition(self,combatant,direction):
-        if direction == "Down":
-            return min(self.getCombatSize()-1,combatant.combatPosition+1)
-        elif direction == "Up":
-            return max(0,combatant.combatPosition-1)
+        if lastCombatant:
+            return lastCombatant.combatPosition
+        else:
+            return 0
 
+    def fixCombatPositions(self,targetPosition):
+        targets = Combatant.query.filter(Combatant.combat_id==self.id,Combatant.combatPosition>targetPosition).all()
+        if targets:
+            for target in targets:
+                target.combatPosition -= 1
+        return None
 
 class Combatant(db.Model):
     id = db.Column(db.Integer, primary_key=True)

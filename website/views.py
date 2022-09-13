@@ -19,9 +19,6 @@ def combat_id(combat_arg):
 
     combat = Combat.query.filter_by(combat_key=combat_arg).first()
 
-    # this is not always necessary - I should do this differently
-    combatants = Combatant.query.filter_by(combat_id=combat.id).order_by('combatPosition').all()
-
     if not(combat):
         flash("Combat not found",category="error")
         return redirect(url_for("views.combat_no_id"))
@@ -41,7 +38,7 @@ def combat_id(combat_arg):
                 combat_id=combat.id,
                 damage = 0,
                 disabled = False,
-                combatPosition = combat.getCombatSize()+1
+                combatPosition = combat.getLastPosition()+1
             )
 
             db.session.add(new_combatant)
@@ -57,6 +54,7 @@ def combat_id(combat_arg):
 
             # check for deletion
             if 'delete' in data:
+                combat.fixCombatPositions(combatant.combatPosition)
                 db.session.delete(combatant)
 
             # check if character has been disabled/enabled
@@ -69,22 +67,19 @@ def combat_id(combat_arg):
             # check position
             if 'changePosition' in data:
                 # get all the combatants
-                combatants_list = [combatant.id for combatant in combatants]
-
-                print(combatants_list)
-
-                #### this is actually a big deal ####
-                #### this is in many ways the whole point of the site. ####
-
-                # get the new position
-                # move the combatant in the list
-                # then update all the combatant combat positions
-
-                # something like this?
-                #current_Position = combatants_list.index(combatant.id)
-                #combatants_list.pop(current_Position)
-                #combatants_list.insert(current_Position-1,combatant.id)
                 
+                if data['changePosition'] == "Up" and combatant.combatPosition > 1:
+                    direction = -1
+                    swap = True
+                elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getLastPosition():
+                    direction = 1
+                    swap = True
+                else:
+                    swap = False
+                
+                if swap:
+                    trader = Combatant.query.filter_by(combat_id=combat.id,combatPosition=combatant.combatPosition+direction).first()
+                    combatant.combatPosition, trader.combatPosition = trader.combatPosition, combatant.combatPosition
 
             # modify damage
             if not data['addDamage']:
@@ -94,8 +89,6 @@ def combat_id(combat_arg):
             # commit changes
             db.session.commit()
             flash(f"Updated Combatant: {combatant}",category="success")
-
-
 
     return render_template("combat.html", user=current_user, combat=combat)
 
