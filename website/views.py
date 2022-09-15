@@ -97,16 +97,15 @@ def postCombat(combat,data):
             # get all the combatants
             
             if data['changePosition'] == "Up" and combatant.combatPosition > 1:
-                direction = -1
                 swap = True
+                trader = combat.getPrevPosition(combatant.combatPosition)
             elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getLastPosition():
-                direction = 1
                 swap = True
+                trader = combat.getNextPosition(combatant.combatPosition)
             else:
                 swap = False
             
             if swap:
-                trader = Combatant.query.filter_by(combat_id=combat.id,combatPosition=combatant.combatPosition+direction).first()
                 combatant.combatPosition, trader.combatPosition = trader.combatPosition, combatant.combatPosition
 
         # modify damage

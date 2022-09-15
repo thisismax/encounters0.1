@@ -1,7 +1,7 @@
 from . import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from random import choice
+from random import choice, randint
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,6 +46,7 @@ class Combat(db.Model):
         else:
             return 0
 
+    # getNextPosition and getPrevPosition could probably be combined if I were cleverer
     def getNextPosition(self,currentPosition):
         nextCombatant = (Combatant.query.filter(
                 Combatant.combat_id==self.id,
@@ -84,6 +85,9 @@ class Combat(db.Model):
                 target.combatPosition -= 1
         return None
 
+    def rollInitiative(self):
+        pass
+
 class Combatant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     combat_id = db.Column(db.Integer, db.ForeignKey('combat.id'))
@@ -93,4 +97,8 @@ class Combatant(db.Model):
     initiative = db.Column(db.Integer)
     damage = db.Column(db.Integer)
     disabled = db.Column(db.Boolean)
-    combatPosition = db.Column(db.Integer)
+    combatPosition = db.Column(db.Float)
+
+    def rollInitiative(self):
+        self.combatPosition = randint(1,20)+self.initiativeBonus
+        return self.combatPosition
