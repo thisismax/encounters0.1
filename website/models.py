@@ -46,8 +46,39 @@ class Combat(db.Model):
         else:
             return 0
 
+    def getNextPosition(self,currentPosition):
+        nextCombatant = (Combatant.query.filter(
+                Combatant.combat_id==self.id,
+                Combatant.combatPosition>currentPosition
+            )
+            .order_by(Combatant.combatPosition)
+            .first()
+        )
+
+        if nextCombatant:
+            return nextCombatant
+        else:
+            return None
+    
+    def getPrevPosition(self,currentPosition):
+        nextCombatant = (Combatant.query.filter(
+                Combatant.combat_id==self.id,
+                Combatant.combatPosition<currentPosition
+            )
+            .order_by(Combatant.combatPosition.desc())
+            .first()
+        )
+
+        if nextCombatant:
+            return nextCombatant
+        else:
+            return None
+
     def fixCombatPositions(self,targetPosition):
-        targets = Combatant.query.filter(Combatant.combat_id==self.id,Combatant.combatPosition>targetPosition).all()
+        targets = Combatant.query.filter(
+            Combatant.combat_id==self.id,
+            Combatant.combatPosition>targetPosition
+        ).all()
         if targets:
             for target in targets:
                 target.combatPosition -= 1

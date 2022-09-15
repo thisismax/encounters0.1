@@ -25,70 +25,8 @@ def combat_id(combat_arg):
 
     if request.method =='POST':
         data = request.form.to_dict()
-        
-        # note to self - put these in their own class/functions
-        if data['combatantForm'] == "addCombatant":
-            
-            if not data['initiativeBonus']:
-                data['initiativeBonus'] = 0
 
-            new_combatant = Combatant(
-                combatantName=data['combatantName'],
-                initiativeBonus=data['initiativeBonus'],
-                combat_id=combat.id,
-                damage = 0,
-                disabled = False,
-                combatPosition = combat.getLastPosition()+1
-            )
-
-            db.session.add(new_combatant)
-            db.session.commit()
-        
-            flash(f"Added new Combatant {new_combatant.combatPosition}",category="success")
-
-        elif data['combatantForm'] == "editCombatant":
-            
-            print(data)
-            
-            combatant = Combatant.query.get(data['combatantId'])
-
-            # check for deletion
-            if 'delete' in data:
-                combat.fixCombatPositions(combatant.combatPosition)
-                db.session.delete(combatant)
-
-            # check if character has been disabled/enabled
-            if 'disable' in data:
-                if data['disable'] == 'Enable':
-                    combatant.disabled = False
-                else:
-                    combatant.disabled = True
-
-            # check position
-            if 'changePosition' in data:
-                # get all the combatants
-                
-                if data['changePosition'] == "Up" and combatant.combatPosition > 1:
-                    direction = -1
-                    swap = True
-                elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getLastPosition():
-                    direction = 1
-                    swap = True
-                else:
-                    swap = False
-                
-                if swap:
-                    trader = Combatant.query.filter_by(combat_id=combat.id,combatPosition=combatant.combatPosition+direction).first()
-                    combatant.combatPosition, trader.combatPosition = trader.combatPosition, combatant.combatPosition
-
-            # modify damage
-            if not data['addDamage']:
-                data['addDamage'] = 0
-            combatant.damage = max(combatant.damage + int(data['addDamage']),0)
-
-            # commit changes
-            db.session.commit()
-            flash(f"Updated Combatant: {combatant}",category="success")
+        postCombat(combat,data)
 
     return render_template("combat.html", user=current_user, combat=combat)
 
@@ -112,3 +50,72 @@ def manageCombats():
         flash("Added new Combat",category="success")
 
     return render_template("manageCombat.html", user=current_user)
+
+
+
+def postCombat(combat,data):
+    
+    if data['combatantForm'] == "addCombatant":
+        
+        if not data['initiativeBonus']:
+            data['initiativeBonus'] = 0
+
+        new_combatant = Combatant(
+            combatantName=data['combatantName'],
+            initiativeBonus=data['initiativeBonus'],
+            combat_id=combat.id,
+            damage = 0,
+            disabled = False,
+            combatPosition = combat.getLastPosition()+1
+        )
+
+        db.session.add(new_combatant)
+        db.session.commit()
+    
+        flash(f"Added new Combatant {new_combatant.combatPosition}",category="success")
+
+    elif data['combatantForm'] == "editCombatant":
+        
+        print(data)
+        
+        combatant = Combatant.query.get(data['combatantId'])
+
+        # check for deletion
+        if 'delete' in data:
+            combat.fixCombatPositions(combatant.combatPosition)
+            db.session.delete(combatant)
+
+        # check if character has been disabled/enabled
+        if 'disable' in data:
+            if data['disable'] == 'Enable':
+                combatant.disabled = False
+            else:
+                combatant.disabled = True
+
+        # check position
+        if 'changePosition' in data:
+            # get all the combatants
+            
+            if data['changePosition'] == "Up" and combatant.combatPosition > 1:
+                direction = -1
+                swap = True
+            elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getLastPosition():
+                direction = 1
+                swap = True
+            else:
+                swap = False
+            
+            if swap:
+                trader = Combatant.query.filter_by(combat_id=combat.id,combatPosition=combatant.combatPosition+direction).first()
+                combatant.combatPosition, trader.combatPosition = trader.combatPosition, combatant.combatPosition
+
+        # modify damage
+        if not data['addDamage']:
+            data['addDamage'] = 0
+        combatant.damage = max(combatant.damage + int(data['addDamage']),0)
+
+        # commit changes
+        db.session.commit()
+        flash(f"Updated Combatant: {combatant}",category="success")
+
+    return None
