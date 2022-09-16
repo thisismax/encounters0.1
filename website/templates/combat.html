@@ -54,9 +54,7 @@ Add Encounter
                     <th>Damage</th>
                     <th>Move Up</th>
                     <th>Move Down</th>
-                    <th>Disable</th>
                     <th>Delete</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -85,18 +83,6 @@ Add Encounter
                             </td>
                             <td><input type="submit" name="changePosition" value="Up" /></td>
                             <td><input type="submit" name="changePosition" value="Down" /></td>
-                            <td>
-                                <input 
-                                    type="submit"
-                                    name="disable"
-                                    value=
-                                        {% if combatant.disabled %}
-                                            "Enable"
-                                        {% else %}
-                                            "Disable"
-                                        {% endif %}
-                                />
-                            </td>
                             <td><input type="submit" name="delete" value="Delete" /></td>
 
                         </form>

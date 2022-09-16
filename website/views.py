@@ -86,13 +86,6 @@ def postCombat(combat,data):
         if 'delete' in data:
             db.session.delete(combatant)
 
-        # check if character has been disabled/enabled
-        if 'disable' in data:
-            if data['disable'] == 'Enable':
-                combatant.disabled = False
-            else:
-                combatant.disabled = True
-
         # check position
         if 'changePosition' in data:
             # get all the combatants
