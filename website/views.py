@@ -84,7 +84,6 @@ def postCombat(combat,data):
 
         # check for deletion
         if 'delete' in data:
-            combat.fixCombatPositions(combatant.combatPosition)
             db.session.delete(combatant)
 
         # check if character has been disabled/enabled
@@ -98,16 +97,18 @@ def postCombat(combat,data):
         if 'changePosition' in data:
             # get all the combatants
             
-            if data['changePosition'] == "Up" and combatant.combatPosition > 1:
+            if data['changePosition'] == "Up" and combatant.combatPosition < combat.getFirstPosition().combatPosition:
                 swap = True
                 trader = combat.getPrevPosition(combatant.combatPosition)
-            elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getFirstPosition().combatPosition:
+            elif data['changePosition'] == "Down" and combatant.combatPosition > combat.getLastPosition().combatPosition:
                 swap = True
                 trader = combat.getNextPosition(combatant.combatPosition)
             else:
                 swap = False
             
             if swap:
+                if combatant.active:
+                    combat.nextCombatant()
                 combatant.combatPosition, trader.combatPosition = trader.combatPosition, combatant.combatPosition
 
         # modify damage

@@ -6,38 +6,42 @@ Add Encounter
 
 {% block main %}
 
-<form name="addCombatant" method="POST">
-    <label for="combatantName">Combat Name</label>
-    <input 
-        type="text"
-        id="combatName"
-        name="combatName"
-        placeholder="Combat Name"
-        required
-    />
-    <button type="add">Add New Combat</button>
-</form>
+<section>
+    <form name="addCombat" method="POST">
+        <label for="combatName">Combat Name</label>
+        <input 
+            type="text"
+            id="combatName"
+            name="combatName"
+            placeholder="Combat Name"
+            required
+        />
+        <button type="add">Add New Combat</button>
+    </form>
+</section>
 
-<table>
-    <caption class="tableCaption">List of your combats.</caption>
-    <thead>
-        <tr>
-            <th>Combat Name</th>
-            <th>ID</th>
-            <th>Number of Combatants</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for combat in user.combats %}
-        <!-- this does not handle a long list of combats (yet?) -->
+<section>
+    <table>
+        <caption class="tableCaption">List of your combats.</caption>
+        <thead>
             <tr>
-                <td>{{ combat.combatName }}</td>
-                <td><a href="/combat/{{ combat.combat_key }}">{{ combat.combat_key }}</a></td>
-                <td>test</td>
+                <th>Combat Name</th>
+                <th>ID</th>
+                <th>Number of Combatants</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for combat in user.combats %}
+            <!-- this does not handle a long list of combats (yet?) -->
+                <tr>
+                    <td>{{ combat.combatName }}</td>
+                    <td><a href="/combat/{{ combat.combat_key }}">{{ combat.combat_key }}</a></td>
+                    <td>{{ combat.getCombatCount() }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
 
 
 {% endblock %}

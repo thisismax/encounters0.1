@@ -7,25 +7,30 @@ Add Encounter
 {% block main %}
 
 {% if combat %}
+
     <section>
-    <form method="POST">
-        <input type="hidden" name="combatantForm" value="addCombatant"/>
-        <label for="combatantName">Combatant Name</label>
-        <input 
-            type="text"
-            id="combatantName"
-            name="combatantName"
-            placeholder="Combatant Name"
-        />
-        <label for="initiativeBonus">Initiative Bonus</label>
-        <input 
-            type="number"
-            id="initiativeBonus"
-            name="initiativeBonus"
-            placeholder="0"
-        />
-        <button type="add">Add</button>
-    </form>
+        Combat: {{ combat.combatName }}
+    </section>
+
+    <section>
+        <form method="POST">
+            <input type="hidden" name="combatantForm" value="addCombatant"/>
+            <label for="combatantName">Combatant Name</label>
+            <input 
+                type="text"
+                id="combatantName"
+                name="combatantName"
+                placeholder="Combatant Name"
+            />
+            <label for="initiativeBonus">Initiative Bonus</label>
+            <input 
+                type="number"
+                id="initiativeBonus"
+                name="initiativeBonus"
+                placeholder="0"
+            />
+            <button type="add">Add</button>
+        </form>
     </section>
 
     <section>
@@ -41,7 +46,7 @@ Add Encounter
             <caption class="tableCaption">Combatants</caption>
             <thead>
                 <tr>
-                    <th>Active</th>
+                    <th></th>
                     <th>Combatant</th>
                     <th>Initiative Bonus</th>
                     <th>Initiative</th>
@@ -60,7 +65,11 @@ Add Encounter
                         <form method="POST">
                             <input type="hidden" name="combatantForm" value="editCombatant"/>
                             <input type="hidden" name="combatantId" value="{{combatant.id}}"/>
-                            <td>{{combatant.active}}</td>
+                            <td>
+                                {% if combatant.active %}
+                                    Active
+                                {% endif %}
+                            </td>
                             <td>{{combatant.combatantName}}</td>
                             <td>{{combatant.initiativeBonus}}</td>
                             <td>{{combatant.combatPosition|int}}</td>
