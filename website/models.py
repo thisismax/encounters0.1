@@ -96,6 +96,7 @@ class Combat(db.Model):
         else:
             return self.getFirstPosition()
 
+    # pretty sure this should be removed.
     def fixCombatPositions(self,targetPosition):
         targets = Combatant.query.filter(
             Combatant.combat_id==self.id,
