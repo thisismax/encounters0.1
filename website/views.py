@@ -67,12 +67,12 @@ def postCombat(combat,data):
             combat_id=combat.id,
             damage = 0,
             disabled = False,
-            combatPosition = combat.getFirstPosition()+1,
+            combatPosition = combat.newCombatantPosition(),
             active = False
         )
 
         db.session.add(new_combatant)
-        db.session.commit()
+        #db.session.commit()
     
         flash(f"Added new Combatant {new_combatant.combatPosition}",category="success")
 
@@ -101,7 +101,7 @@ def postCombat(combat,data):
             if data['changePosition'] == "Up" and combatant.combatPosition > 1:
                 swap = True
                 trader = combat.getPrevPosition(combatant.combatPosition)
-            elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getFirstPosition():
+            elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getFirstPosition().combatPosition:
                 swap = True
                 trader = combat.getNextPosition(combatant.combatPosition)
             else:
@@ -120,7 +120,10 @@ def postCombat(combat,data):
         flash(f"Updated Combatant: {combatant}",category="success")
 
     elif data['combatantForm'] == "runCombat":
-        if data['rollInitiative']:
+        if 'rollInitiative' in data:
             combat.rollInitiative()
+        elif 'nextCombatant' in data:
+            combat.nextCombatant()
+            pass
 
     return None

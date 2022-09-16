@@ -33,21 +33,29 @@ class Combat(db.Model):
             key += choice(letters)
         return key
 
+    # used to make sure combat has combatants before querying database
+    def getCombatCount(self):
+        return Combatant.query.filter(Combatant.combat_id==self.id).count()
+
     def getFirstPosition(self):
-        lastCombatant = (Combatant
+        firstCombatant = (Combatant
             .query
             .filter_by(combat_id=self.id)
             .order_by(Combatant.combatPosition.desc())
             .first()
         )
 
-        if lastCombatant:
-            return lastCombatant.combatPosition
+        if firstCombatant:
+            return firstCombatant
         else:
-            return 0
+            return None
 
     # getNextPosition and getPrevPosition could probably be combined if I were cleverer
     def getPrevPosition(self,currentPosition):
+        
+        if self.getCombatCount() == 1:
+            return Combatant.query.filter_by(combat_id=self.id).first()
+        
         nextCombatant = (Combatant.query.filter(
                 Combatant.combat_id==self.id,
                 Combatant.combatPosition>currentPosition
@@ -62,6 +70,10 @@ class Combat(db.Model):
             return None
     
     def getNextPosition(self,currentPosition):
+        
+        if self.getCombatCount() == 1:
+            return Combatant.query.filter_by(combat_id=self.id).first()
+
         nextCombatant = (Combatant.query.filter(
                 Combatant.combat_id==self.id,
                 Combatant.combatPosition<currentPosition
@@ -73,7 +85,16 @@ class Combat(db.Model):
         if nextCombatant:
             return nextCombatant
         else:
-            return None
+            return self.getFirstPosition()
+
+    def getActiveCombatant(self):
+        
+        activeCombatant = Combatant.query.filter_by(active=True).first()
+
+        if activeCombatant:
+            return activeCombatant
+        else:
+            return self.getFirstPosition()
 
     def fixCombatPositions(self,targetPosition):
         targets = Combatant.query.filter(
@@ -85,7 +106,18 @@ class Combat(db.Model):
                 target.combatPosition -= 1
         return None
 
+    def newCombatantPosition(self):
+
+        if not self.getCombatCount():
+            return 0
+        else:
+            return self.getFirstPosition().combatPosition+1
+
     def rollInitiative(self):
+        
+        if not self.getCombatCount():
+            return False
+        
         combatants = Combatant.query.filter_by(combat_id=self.id).all()
 
         rolls = []
@@ -104,6 +136,19 @@ class Combat(db.Model):
         # agh this is redundant code with "getFirstPosition"
         firstCombatant = Combatant.query.filter_by(combat_id=self.id).order_by(Combatant.combatPosition.desc()).first()
         firstCombatant.active = True
+    
+    def nextCombatant(self):
+
+        # check that there are combatants
+        if not self.getCombatCount():
+            return False
+
+        currentCombatant = self.getActiveCombatant()
+        
+        nextCombatant = self.getNextPosition(currentCombatant.combatPosition)
+
+        currentCombatant.active = False
+        nextCombatant.active = True
 
         
 
