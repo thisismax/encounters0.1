@@ -33,7 +33,7 @@ class Combat(db.Model):
             key += choice(letters)
         return key
 
-    def getLastPosition(self):
+    def getFirstPosition(self):
         lastCombatant = (Combatant
             .query
             .filter_by(combat_id=self.id)
@@ -47,7 +47,7 @@ class Combat(db.Model):
             return 0
 
     # getNextPosition and getPrevPosition could probably be combined if I were cleverer
-    def getNextPosition(self,currentPosition):
+    def getPrevPosition(self,currentPosition):
         nextCombatant = (Combatant.query.filter(
                 Combatant.combat_id==self.id,
                 Combatant.combatPosition>currentPosition
@@ -61,7 +61,7 @@ class Combat(db.Model):
         else:
             return None
     
-    def getPrevPosition(self,currentPosition):
+    def getNextPosition(self,currentPosition):
         nextCombatant = (Combatant.query.filter(
                 Combatant.combat_id==self.id,
                 Combatant.combatPosition<currentPosition
@@ -86,7 +86,26 @@ class Combat(db.Model):
         return None
 
     def rollInitiative(self):
-        pass
+        combatants = Combatant.query.filter_by(combat_id=self.id).all()
+
+        rolls = []
+
+        for combatant in combatants:
+            combatant.rollInitiative()
+
+            for i in range(10):
+                if combatant.combatPosition in rolls:
+                    combatant.combatPosition += (10**-i)*choice([-1,1])
+                    continue
+                break
+
+            rolls.append(combatant.combatPosition)
+
+        # agh this is redundant code with "getFirstPosition"
+        firstCombatant = Combatant.query.filter_by(combat_id=self.id).order_by(Combatant.combatPosition.desc()).first()
+        firstCombatant.active = True
+
+        
 
 class Combatant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -94,10 +113,10 @@ class Combatant(db.Model):
 
     combatantName = db.Column(db.String(150))
     initiativeBonus = db.Column(db.Integer)
-    initiative = db.Column(db.Integer)
     damage = db.Column(db.Integer)
     disabled = db.Column(db.Boolean)
     combatPosition = db.Column(db.Float)
+    active = db.Column(db.Boolean)
 
     def rollInitiative(self):
         self.combatPosition = randint(1,20)+self.initiativeBonus

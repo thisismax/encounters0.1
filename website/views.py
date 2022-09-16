@@ -27,6 +27,7 @@ def combat_id(combat_arg):
         data = request.form.to_dict()
 
         postCombat(combat,data)
+        db.session.commit()
 
     return render_template("combat.html", user=current_user, combat=combat)
 
@@ -66,7 +67,8 @@ def postCombat(combat,data):
             combat_id=combat.id,
             damage = 0,
             disabled = False,
-            combatPosition = combat.getLastPosition()+1
+            combatPosition = combat.getFirstPosition()+1,
+            active = False
         )
 
         db.session.add(new_combatant)
@@ -99,7 +101,7 @@ def postCombat(combat,data):
             if data['changePosition'] == "Up" and combatant.combatPosition > 1:
                 swap = True
                 trader = combat.getPrevPosition(combatant.combatPosition)
-            elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getLastPosition():
+            elif data['changePosition'] == "Down" and combatant.combatPosition < combat.getFirstPosition():
                 swap = True
                 trader = combat.getNextPosition(combatant.combatPosition)
             else:
@@ -116,5 +118,9 @@ def postCombat(combat,data):
         # commit changes
         db.session.commit()
         flash(f"Updated Combatant: {combatant}",category="success")
+
+    elif data['combatantForm'] == "runCombat":
+        if data['rollInitiative']:
+            combat.rollInitiative()
 
     return None

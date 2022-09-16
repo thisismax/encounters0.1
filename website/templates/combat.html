@@ -41,6 +41,7 @@ Add Encounter
             <caption class="tableCaption">Combatants</caption>
             <thead>
                 <tr>
+                    <th>Active</th>
                     <th>Combatant</th>
                     <th>Initiative Bonus</th>
                     <th>Initiative</th>
@@ -54,14 +55,15 @@ Add Encounter
                 </tr>
             </thead>
             <tbody>
-                {% for combatant in combat.combatants|sort(attribute="combatPosition") %}
+                {% for combatant in combat.combatants|sort(attribute="combatPosition",reverse=True) %}
                     <tr>
                         <form method="POST">
                             <input type="hidden" name="combatantForm" value="editCombatant"/>
                             <input type="hidden" name="combatantId" value="{{combatant.id}}"/>
+                            <td>{{combatant.active}}</td>
                             <td>{{combatant.combatantName}}</td>
                             <td>{{combatant.initiativeBonus}}</td>
-                            <td>{{combatant.combatPosition}}</td>
+                            <td>{{combatant.combatPosition|int}}</td>
                             <td>{{combatant.damage}}</td>
                             <td>
                                 <input 
