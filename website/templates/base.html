@@ -30,9 +30,18 @@
             {% else %}
                 <a class="navitem" href="/login">Login</a>
                 <a class="navitem" href="/sign-up">Sign-up</a>
+                <form class="navitem" method="POST">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="awesomeDM42"
+                    />
+                    <button type="add">Login</button>
+                </form>
             {% endif %}
         </nav>
-
 
         <!-- flashed message box -->
         <!-- not sure if this is the best solution for this here -->
