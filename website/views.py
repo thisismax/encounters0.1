@@ -1,17 +1,33 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User, Combat, Combatant
 from . import db
+from .auth import handleLogin
+from markupsafe import escape
 
 from flask_login import login_required, current_user
 
 views = Blueprint('views',__name__)
 
-@views.route('/')
+@views.route('/', methods=['GET','POST'])
 def home():
+
+    if request.method =='POST':
+        data = request.form.to_dict()
+        
+        if 'username' in data:
+            handleLogin(escape(data['username']))
+    
     return render_template("home.html", user=current_user)
 
-@views.route('/combat')
+@views.route('/combat', methods=['GET','POST'])
 def combat_no_id():
+    
+    if request.method =='POST':
+        data = request.form.to_dict()
+        
+        if 'username' in data:
+            handleLogin(escape(data['username']))
+
     return render_template("combat.html", user=current_user, combat=None)
 
 @views.route('/combat/<combat_arg>', methods=['GET','POST'])
@@ -26,6 +42,10 @@ def combat_id(combat_arg):
     if request.method =='POST':
         data = request.form.to_dict()
 
+        if 'username' in data:
+            if handleLogin(escape(data['username'])):
+                return render_template("combat.html", user=current_user, combat=combat)       
+
         postCombat(combat,data)
         db.session.commit()
 
@@ -39,7 +59,7 @@ def manageCombats():
         data = request.form.to_dict()
         
         new_combat = Combat(
-            combatName=data['combatName'],
+            combatName=escape(data['combatName']),
             combat_key=Combat.set_combat_key(),
             user_id=current_user.id
         )
@@ -62,8 +82,8 @@ def postCombat(combat,data):
             data['initiativeBonus'] = 0
 
         new_combatant = Combatant(
-            combatantName=data['combatantName'],
-            initiativeBonus=data['initiativeBonus'],
+            combatantName=escape(data['combatantName']),
+            initiativeBonus=escape(data['initiativeBonus']),
             combat_id=combat.id,
             damage = 0,
             disabled = False,
@@ -80,7 +100,7 @@ def postCombat(combat,data):
         
         print(data)
         
-        combatant = Combatant.query.get(data['combatantId'])
+        combatant = Combatant.query.get(escape(data['combatantId']))
 
         # check for deletion
         if 'delete' in data:
@@ -107,7 +127,7 @@ def postCombat(combat,data):
         # modify damage
         if not data['addDamage']:
             data['addDamage'] = 0
-        combatant.damage = max(combatant.damage + int(data['addDamage']),0)
+        combatant.damage = max(combatant.damage + int(escape(data['addDamage'])),0)
 
         # commit changes
         db.session.commit()

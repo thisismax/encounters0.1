@@ -8,14 +8,14 @@ class User(db.Model, UserMixin):
     combats = db.relationship("Combat")
 
     username = db.Column(db.String(150), unique=True)
-    password_hash = db.Column(db.String(150))
+    # password_hash = db.Column(db.String(150))
 
-    @staticmethod
-    def set_password(password):
-         return generate_password_hash(password)
+    # @staticmethod
+    # def set_password(password):
+    #      return generate_password_hash(password)
 
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    # def verify_password(self, password):
+    #     return check_password_hash(self.password_hash, password)
 
 
 class Combat(db.Model):

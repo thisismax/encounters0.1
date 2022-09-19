@@ -6,28 +6,19 @@ Add Encounter
 
 {% block main %}
 
-<form method="POST">
-    <label for="username">Username</label>
-    <input 
-        type="text"
-        id="username"
-        name="username"
-        placeholder="username"
-    /><br />
-    <label for="password1">Select Password</label>
-    <input 
-        type="password"
-        id="password1"
-        name="password1"
-        placeholder="password"
-    /><br />
-    <label for="password2">Repeat Password</label>
-    <input 
-        type="password"
-        id="password2"
-        name="password2"
-        placeholder="password"
-    /><br />
-    <button type="add">Create Account</button>
-</form>
+<section>
+    <p><em>Note: Only creators of combats need to sign up. Participating in a combat just requires the link to the combat.</em></p>    
+</section>
+<section>
+    <form method="POST">
+        <label for="username">Username</label>
+        <input 
+            type="text"
+            id="username"
+            name="username"
+            placeholder="username"
+        /><br />
+        <button type="add">Create Account</button>
+    </form>
+</section>
 {% endblock %}
