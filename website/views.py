@@ -78,21 +78,29 @@ def postCombat(combat,data):
     
     if data['combatantForm'] == "addCombatant":
         
-        if not data['initiativeBonus']:
-            data['initiativeBonus'] = 0
+        if not data['initiative']:
+            data['initiative'] = 0
+
+        print(data)
+
+        if data['initiativeType']=="radioBonus": # user has selected 'bonus' for initiative
+            newCombatPosition = combat.newCombatantPosition()
+            randomInitiative = True
+        else: # user has selected 'total' for initiative
+            newCombatPosition = data['initiative']
+            randomInitiative = False
 
         new_combatant = Combatant(
             combatantName=escape(data['combatantName']),
-            initiativeBonus=escape(data['initiativeBonus']),
+            initiativeBonus=escape(data['initiative']),
             combat_id=combat.id,
             damage = 0,
-            disabled = False,
-            combatPosition = combat.newCombatantPosition(),
+            combatPosition = newCombatPosition,
+            randomInitiative = randomInitiative,
             active = False
         )
 
         db.session.add(new_combatant)
-        #db.session.commit()
     
         flash(f"Added new Combatant {new_combatant.combatPosition}",category="success")
 
