@@ -146,6 +146,5 @@ def postCombat(combat,data):
             combat.rollInitiative()
         elif 'nextCombatant' in data:
             combat.nextCombatant()
-            pass
 
     return None

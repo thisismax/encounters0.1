@@ -92,7 +92,11 @@ class Combat(db.Model):
 
     def getActiveCombatant(self):
         
-        return Combatant.query.filter_by(active=True).first()
+        return (Combatant.query.filter(
+            Combatant.combat_id==self.id,
+            Combatant.active==True,
+            ).first()
+        )
 
     def newCombatantPosition(self):
 
@@ -112,7 +116,6 @@ class Combat(db.Model):
 
         for combatant in combatants:
             combatant.rollInitiative()
-            combatant.active = False
 
             for i in range(10):
                 if combatant.combatPosition in rolls:
@@ -134,9 +137,11 @@ class Combat(db.Model):
             return None
 
         currentCombatant = self.getActiveCombatant()
+        print(currentCombatant.combatantName, currentCombatant.active)
 
         if currentCombatant:
             nextCombatant = self.getNextPosition(currentCombatant.combatPosition)
+            print(nextCombatant.combatantName, nextCombatant.active)
 
             currentCombatant.active = False
             nextCombatant.active = True
@@ -158,6 +163,7 @@ class Combatant(db.Model):
     active = db.Column(db.Boolean)
 
     def rollInitiative(self):
+        self.active = False
         if self.randomInitiative:
             self.combatPosition = randint(1,20)+self.initiativeBonus
             
