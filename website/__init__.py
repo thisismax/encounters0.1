@@ -11,6 +11,8 @@ DB_NAME = "encounters.db"
 
 HOME_FOLDER = Path('.')
 WEBSITE_FOLDER = HOME_FOLDER/"website"
+DB_FOLDER = WEBSITE_FOLDER/"database"
+DB_PATH = DB_FOLDER/DB_NAME
 
 load_dotenv()
 SECRET_KEY = os.environ['SECRET_KEY']
@@ -18,7 +20,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = SECRET_KEY
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///database/{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     from .views import views
@@ -44,6 +46,6 @@ def create_app():
 
 def create_db(app):
 
-    if not Path.exists(WEBSITE_FOLDER/DB_NAME):
+    if not Path.exists(DB_PATH):
         db.create_all(app=app)
         print('Created Database')

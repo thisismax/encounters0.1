@@ -1,0 +1,24 @@
+services:
+  encounters:
+    container_name: encounters
+    restart: always
+    build: .
+    #tiangolo/uwsgi-nginx-flask:python3.10
+    #command: python3 -m pip install -r requirements.txt
+    ports:
+      - 8000:8000
+    volumes:
+      - /app/website/database
+    working_dir: /app
+    env_file:
+      - .env
+    command: gunicorn -w 1 -b 0.0.0.0:8000 wsgi:server
+
+nginx:
+    container_name: nginx
+    restart: always
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - encounters
